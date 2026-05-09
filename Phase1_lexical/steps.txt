@@ -1,0 +1,4 @@
+1. Define the token vocabulary -> predefined
+2.Read the input and track line numbers  -> Done
+3.Tokenize
+4.generate output. 
