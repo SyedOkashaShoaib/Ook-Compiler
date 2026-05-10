@@ -1,5 +1,6 @@
 import sys
 import os
+
 class Token:
     def __init__(self, type, value, index):
         self.type = type
@@ -9,12 +10,8 @@ class Token:
         return f'<{self.type}, {self.value}, Line {self.index}>'
     def __repr__(self):
         return self.__str__()
-def read_Stream():
-    if len(sys.argv) < 2:  #chekc if filename is provided
-        print("SYSTEM ERROR: filename not provided. ook out")
-        sys.exit(1)
-    filename = sys.argv[1]
 
+def read_Stream(filename):
     if not os.path.isfile(filename) :   #incorrect filename, path 
         print(f"SYSTEM ERROR: file {filename} does not exist. ook out")
         sys.exit(1)
@@ -29,8 +26,7 @@ def read_Stream():
             processed_stream.append({ 'index' :  index, 'words' : words_list})        
 
     return processed_stream
-# Ook? Ook?
-# Give the Memory Pointer a banana.
+
 def get_Tocken_Type(word):
     if word == 'Ook. Ook?':
         return 'MOVE_RIGHT'
@@ -63,30 +59,40 @@ def tockenize_Stream(line_number, words):
         word1 = words[i]
         word2 = words[i+1]
         word_pair = f"{word1} {word2}"
-        # print(word_pair)
+        
         type = get_Tocken_Type(word_pair)
-        # print(type)
+        
         if type == 'NO COMPRENDE':
             print(f"LEXICAL ERROR: Invalid syntax element '{word_pair}' found at line {line_number}. Ook ook")
             sys.exit(1)
 
         line_tocken.append(Token(type, word_pair, line_number))
-        # print(line_tocken)
+        
     return line_tocken
 
     
-def run_Lexer():
-    file_data = read_Stream()
-    # print(file_data)
-
+def run_Lexer(filename):
+    file_data = read_Stream(filename)
+    
     tocken_stream = []
     
-    for dict in file_data:
-        line_number = dict['index']
-        words = dict['words']
+    for line_dict in file_data:
+        line_number = line_dict['index']
+        words = line_dict['words']
         line_tocken = tockenize_Stream(line_number, words)
 
         tocken_stream.extend(line_tocken)
-    print(tocken_stream) 
+    last_line = tocken_stream[-1].index if tocken_stream else 1
+    eof_tocken = Token('EOF', 'end of file',last_line + 1)
+    tocken_stream.append(eof_tocken)
+    
+    return tocken_stream 
 
-run_Lexer()
+if __name__ == "__main__":
+    if len(sys.argv) < 2:  #chekc if filename is provided
+        print("SYSTEM ERROR: filename not provided. ook out")
+        sys.exit(1)
+        
+    target_filename = sys.argv[1]
+    final_tocken_stream = run_Lexer(target_filename)
+    print(final_tocken_stream)
