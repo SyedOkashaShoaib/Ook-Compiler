@@ -1,12 +1,10 @@
 import sys
 import os
-
-# Dynamically link the Phase 1 folder so we can import the lexer silently
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from Phase1_lexical.lexer import run_Lexer
 
 # ==========================================
-# 1. ABSTRACT SYNTAX TREE (AST) NODES
+# 1. AST NODES
 # ==========================================
 
 class ProgramNode:
@@ -17,13 +15,21 @@ class CommandNode:
     def __init__(self, tocken):
         self.tocken = tocken
 
+class VariableDeclarationNode:
+    def __init__(self, identifier_tocken):
+        self.identifier_tocken = identifier_tocken
+
+class VariableJumpNode:
+    def __init__(self, identifier_tocken):
+        self.identifier_tocken = identifier_tocken
+
 class LoopNode:
     def __init__(self, start_tocken):
         self.start_tocken = start_tocken
         self.body = []
-
+        
 # ==========================================
-# 2. THE PARSER CORE
+# 2. PARSER CORE
 # ==========================================
 
 class Parser:
@@ -65,15 +71,31 @@ class Parser:
         return ProgramNode(statements)
 
     def parse_statement(self):
-        """Statement → Command | Loop"""
+        """Statement → Command | Loop | VariableDecl | VariableJump"""
         valid_commands = ('INCREMENT', 'DECREMENT', 'MOVE_RIGHT', 'MOVE_LEFT', 'READ', 'PRINT', 'GIVE_BANANA')
         
         tocken = self.current_tocken
         
+        # 1. Standard single-token commands
         if tocken.type in valid_commands:
             self.eat(tocken.type)
             return CommandNode(tocken)
             
+        # 2. Variable Declaration: DECLARE_VAR IDENTIFIER
+        elif tocken.type == 'DECLARE_VAR':
+            self.eat('DECLARE_VAR')
+            id_tocken = self.current_tocken
+            self.eat('IDENTIFIER')
+            return VariableDeclarationNode(id_tocken)
+            
+        # 3. Variable Jump: JUMP_VAR IDENTIFIER
+        elif tocken.type == 'JUMP_VAR':
+            self.eat('JUMP_VAR')
+            id_tocken = self.current_tocken
+            self.eat('IDENTIFIER')
+            return VariableJumpNode(id_tocken)
+            
+        # 4. Loops
         elif tocken.type == 'LOOP_START':
             return self.parse_loop()
             
@@ -113,6 +135,12 @@ def print_ast(node, indent=""):
     elif isinstance(node, CommandNode):
         print(f"{indent}Command: {node.tocken.type} (Line {node.tocken.index})")
         
+    elif isinstance(node, VariableDeclarationNode):
+        print(f"{indent}VariableDecl: {node.identifier_tocken.value} (Line {node.identifier_tocken.index})")
+        
+    elif isinstance(node, VariableJumpNode):
+        print(f"{indent}VariableJump: {node.identifier_tocken.value} (Line {node.identifier_tocken.index})")
+        
     elif isinstance(node, LoopNode):
         print(f"{indent}Loop (Started Line {node.start_tocken.index}):")
         for stmt in node.body:
@@ -121,6 +149,10 @@ def print_ast(node, indent=""):
 def run_Parser(filename):
     # 1. Get the tokens silently from Phase 1
     tocken_stream = run_Lexer(filename)
+    print("\n--- PHASE 1: TOKEN STREAM RECIEVED ---")
+    for t in tocken_stream:
+        print(t)
+    print("--------------------------------------\n")
     
     # 2. Feed them into the Parser
     parser = Parser(tocken_stream)

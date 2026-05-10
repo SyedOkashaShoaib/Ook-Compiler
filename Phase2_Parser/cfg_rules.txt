@@ -1,0 +1,8 @@
+Program → StatementList
+StatementList → Statement StatementList | ε
+Statement → Command | Loop
+Command → INCREMENT | DECREMENT | MOVE_RIGHT | MOVE_LEFT | READ | PRINT | GIVE_BANANA | 
+ VariableDecl | VariableJump
+VariableDecl → DECLARE_VAR IDENTIFIER
+VariableJump → JUMP_VAR IDENTIFIER
+Loop → LOOP_START StatementList LOOP_END

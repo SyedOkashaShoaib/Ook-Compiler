@@ -1,6 +1,7 @@
-Ook. Ook? Ook? Ook.
-Ook. Ook.
-Ook! Ook!
-Ook! Ook. Ook. Ook!
-Ook! Ook?
-Ook? Ook!
+Ook!! Ook!! ook_counter
+Ook!! Ook!! 
+
+Ook?? Ook?? ook_counter
+Ook. Ook. Ook. Ook.
+
+Ook?? Ook?? ook_fake_var
