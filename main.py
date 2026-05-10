@@ -7,8 +7,28 @@ from Phase1_lexical.lexer import run_Lexer
 from Phase2_Parser.parser import Parser, print_ast
 from Phase3_semantic.semantic import SemanticAnalyzer, print_symbol_table, print_jump_table
 # TODO: Import Phase 4 modules here when ready
+def print_welcome_banner():
+    # 1. Paste your ASCII text ("Ook! Compiler") inside these quotes
+    ook_text_art = r"""
+     ______     ______    __  ___  __       ______   ______   .___  ___. .______    __   __       _______ .______      
+ /  __  \   /  __  \  |  |/  / |  |     /      | /  __  \  |   \/   | |   _  \  |  | |  |     |   ____||   _  \     
+|  |  |  | |  |  |  | |  '  /  |  |    |  ,----'|  |  |  | |  \  /  | |  |_)  | |  | |  |     |  |__   |  |_)  |    
+|  |  |  | |  |  |  | |    <   |  |    |  |     |  |  |  | |  |\/|  | |   ___/  |  | |  |     |   __|  |      /     
+|  `--'  | |  `--'  | |  .  \  |__|    |  `----.|  `--'  | |  |  |  | |  |      |  | |  `----.|  |____ |  |\  \----.
+ \______/   \______/  |__|\__\ (__)     \______| \______/  |__|  |__| | _|      |__| |_______||_______|| _| `._____|
+                                                                                                                    
+    """
+    
 
+    
+    subtitle = "                                       A programming language for orangutans"
+    
+
+    print(ook_text_art)
+    print(subtitle)
+    print("=" * 120 + "\n")
 def main():
+    print_welcome_banner()
     # Setup Command Line Arguments
     arg_parser = argparse.ArgumentParser(description="Ook! Compiler Driver")
     arg_parser.add_argument("filename", help="The target .ook source file to compile")
